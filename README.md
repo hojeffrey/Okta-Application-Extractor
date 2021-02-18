@@ -12,9 +12,8 @@ Pagination is currently not supported in the script, I will work on it in the fu
 api_token: "Insert API Token"
 application_url: "https://YourComapnyURL.okta.com/api/v1/apps?filter=status+eq+%22ACTIVE%22&limit=200"
 folder_name: "Provide_Folder_Name"
-
 ```
-
+3. Run python script 
 
 ## Result
 
