@@ -2,6 +2,8 @@
 
 **Okta Application Extractor** is a python script that pulls the okta application JSON and SAML XML file from your okta tenant. It relies on the Okta API to gather the data. The Okta API Key and Tenant URL will be configured in the YAML file. 
 
+Pagination is currently not supported in the script, I will work on it in the future. The current limit of applications that can be pulled is 200. 
+
 ## How to Use
 1. Please have a working version of python3 installed. 
 2. Configure the Yaml 
