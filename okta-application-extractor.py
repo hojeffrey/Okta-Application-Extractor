@@ -38,38 +38,37 @@ def main():
 
     initiate_list_application = requests.get(list_application_url, headers=okta_headers)
 
-    get_application_json_result = json.loads(initiate_list_application.text)
-
     get_pagination_pointer = str(initiate_list_application.headers)
 
     pointer_regex = re.compile('rel="self", <((?:(?!").)*)>; rel="next"')
 
     okta_pagination_next_url = pointer_regex.findall(get_pagination_pointer)[0]
 
-    initiate_list_application_paginiation = requests.get(okta_pagination_next_url, headers=okta_headers)
+    while okta_pagination_next_url:
+        get_application_json_result = json.loads(initiate_list_application.text)
 
-    #Make Directory name under application name, save the json and save xml if it contains 
-    for index, i in enumerate(get_application_json_result):
-        print("COUNTER: " + str((int(index) + 1)))
-        application_id = (i['id'])
-        status = (i['status'])
-        app_name = (i['name'])
-        label = (i['label'])
-        
-        try:
-            app_folder_path = (os.path.join(folder_path,label))
-            os.makedirs(app_folder_path)
-            print("Directory " + app_folder_path + "created")
-        except FileExistsError:
-            print("The Directory is already Created")
-            pass
+        #Make Directory name under application name, save the json and save xml if it contains 
+        for index, i in enumerate(get_application_json_result):
+            print("COUNTER: " + str((int(index) + 1)))
+            application_id = (i['id'])
+            status = (i['status'])
+            app_name = (i['name'])
+            label = (i['label'])
+            
+            try:
+                app_folder_path = (os.path.join(folder_path,label))
+                os.makedirs(app_folder_path)
+                print("Directory " + app_folder_path + "created")
+            except FileExistsError:
+                print("The Directory is already Created")
+                pass
 
-        with open((os.path.join(app_folder_path, label) + ".json"), 'w') as f:
-            json.dump(i, f, indent=4, sort_keys=True)
-            print((os.path.join(app_folder_path, label) + ".json") + " file is created")
+            with open((os.path.join(app_folder_path, label) + ".json"), 'w') as f:
+                json.dump(i, f, indent=4, sort_keys=True)
+                print((os.path.join(app_folder_path, label) + ".json") + " file is created")
 
-        try:
-            saml_metadata_url = (i['_links']['metadata']['href'])
+            try:
+                saml_metadata_url = (i['_links']['metadata']['href'])
             get_saml_metadata = requests.get(saml_metadata_url, headers=saml_headers)
             time.sleep(2)
             with open((os.path.join(app_folder_path, label) + ".xml"), 'w') as xml_file:
